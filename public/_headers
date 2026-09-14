@@ -1,3 +1,2 @@
 /*
-  Content-Security-Policy: frame-ancestors 'none'
-  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'self' https://evaoo.com https://*.evaoo.com https://*.pages.dev
