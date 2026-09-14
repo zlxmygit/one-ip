@@ -36,6 +36,54 @@
       }
     })();
   </script>
+  <script>
+    // Embedded in iframe: broadcast document height to parent window for zero-scrollbar auto-resizing
+    (function () {
+      if (window.self === window.top) return;
+
+      // Disable inner vertical scrollbars when embedded
+      var style = document.createElement('style');
+      style.textContent = 'html, body { overflow-y: hidden !important; height: auto !important; min-height: 100% !important; }';
+      document.head.appendChild(style);
+
+      function postHeight() {
+        var root = document.getElementById('root') || document.body;
+        var height = Math.max(
+          document.documentElement.scrollHeight,
+          document.body.scrollHeight,
+          root ? root.scrollHeight : 0,
+          document.documentElement.offsetHeight,
+          document.body.offsetHeight
+        );
+        if (height > 0) {
+          window.parent.postMessage({ type: 'one-ip-resize', height: height }, '*');
+        }
+      }
+
+      window.addEventListener('load', function() {
+        postHeight();
+        setTimeout(postHeight, 300);
+        setTimeout(postHeight, 800);
+        setTimeout(postHeight, 2000);
+      });
+
+      if (typeof ResizeObserver !== 'undefined') {
+        var observer = new ResizeObserver(function () {
+          postHeight();
+        });
+        window.addEventListener('DOMContentLoaded', function () {
+          var target = document.getElementById('root') || document.body;
+          if (target) observer.observe(target);
+        });
+      }
+
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'request-height') {
+          postHeight();
+        }
+      });
+    })();
+  </script>
   <style>
     html {
       touch-action: manipulation;
