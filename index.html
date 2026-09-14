@@ -18,11 +18,6 @@
     // Classic ES5 script: IE cannot execute the application's module bundle.
     (function () {
       var root = document.documentElement;
-      // Fallback only: production must also send frame-ancestors / X-Frame-Options.
-      if (window.self !== window.top) {
-        root.className = "embedded-browser";
-        return;
-      }
       if (document.documentMode || /MSIE|Trident/.test(navigator.userAgent)) {
         root.className = "unsupported-browser";
         return;
@@ -45,10 +40,6 @@
     html {
       touch-action: manipulation;
       -webkit-text-size-adjust: 100%;
-    }
-
-    .embedded-browser body {
-      display: none !important;
     }
 
     #unsupported-browser {
