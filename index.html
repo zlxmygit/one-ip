@@ -37,21 +37,27 @@
     })();
   </script>
   <script>
-    // Embedded in iframe: broadcast document height to parent window for zero-scrollbar auto-resizing
+    // Embedded in iframe: full-width layout & zero-scrollbar auto-resizing
     (function () {
       if (window.self === window.top) return;
 
-      // Disable inner vertical scrollbars when embedded
+      var root = document.documentElement;
+      root.setAttribute('data-layout', 'full');
+
+      // Full-width layout & disable inner vertical scrollbars when embedded
       var style = document.createElement('style');
-      style.textContent = 'html, body { overflow-y: hidden !important; height: auto !important; min-height: 100% !important; }';
+      style.textContent = [
+        'html, body { overflow-y: hidden !important; height: auto !important; min-height: 100% !important; background-color: transparent !important; }',
+        '.app-container { max-width: 100% !important; width: 100% !important; padding: 20px 24px !important; }'
+      ].join('\n');
       document.head.appendChild(style);
 
       function postHeight() {
-        var root = document.getElementById('root') || document.body;
+        var target = document.getElementById('root') || document.body;
         var height = Math.max(
           document.documentElement.scrollHeight,
           document.body.scrollHeight,
-          root ? root.scrollHeight : 0,
+          target ? target.scrollHeight : 0,
           document.documentElement.offsetHeight,
           document.body.offsetHeight
         );
