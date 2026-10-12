@@ -10,11 +10,11 @@ export const navigationRoutes = [
 ] as const;
 export const toolGroups = {
   network: [
-    { path: "/network/connectivity", label: t("网站连通") },
-    { path: "/network/exits", label: t("分流出口") },
+    { path: "/network/connectivity", label: t("网站连通与出口") },
     { path: "/network/dns", label: t("DNS 出口") },
     { path: "/network/cdn", label: t("CDN 节点") },
     { path: "/network/ip", label: t("IP 检测") },
+    { path: "/network/subdomains", label: t("子域名查询") },
     { path: "/network/whois", label: "WHOIS" },
     { path: "/network/ping", label: t("全球 Ping") },
   ],
@@ -41,6 +41,7 @@ export const legacyRoutes: Record<string, string> = {
   "/whois": "/network/whois",
   "/link": "/network/connectivity",
   "/network/link": "/network/connectivity",
+  "/network/exits": "/network/connectivity",
   "/ping": "/network/ping",
   "/cdn": "/network/cdn",
   "/dns-exit": "/network/dns",

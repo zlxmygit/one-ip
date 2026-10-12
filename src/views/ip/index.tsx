@@ -30,7 +30,7 @@ export default function IpPage() {
       return result;
     },
   });
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(true);
   const searchPanel = useRef<HTMLDivElement>(null);
   const searchButton = useRef<HTMLButtonElement>(null);
   const searchId = useId();
@@ -134,7 +134,12 @@ export default function IpPage() {
         </p>
       )}
       {query.data ? (
-        <IpDetails data={query.data} search={search} recent={recent} />
+        <IpDetails
+          key={query.data.coffee.ip}
+          data={query.data}
+          search={search}
+          recent={recent}
+        />
       ) : (
         <div className="ip-dossier-top">
           <div className="flex items-center justify-between">

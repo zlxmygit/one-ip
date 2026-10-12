@@ -41,7 +41,7 @@ curl -fsS 'https://ip.huzhihui.com/api/ip/health?ip=2606:4700:4700::1111&format=
 
 Replace the domain for your deployment. Local development uses `http://127.0.0.1:8787` and requires `ip`. Without `ip`, the API uses the caller address identified by Cloudflare; a proxy changes that egress address.
 
-Returns `ip`, `source`, `checked_at`, `score`, `status`, location, ISP, ASN and `flags` (residential, datacenter, mobile, VPN, proxy, Tor, crawler, abuser). The trust score ranges from 0 to 100, higher is better. Matching the UI, 75–100 is `good`, 45–74 is `moderate`, below 45 is `poor`. Missing or invalid scores yield `score: null` and `status: "unknown"`; missing flags are `null`, not `false`.
+Returns `ip`, `checked_at`, `score`, `status`, location, ISP, ASN and `flags` (residential, datacenter, mobile, VPN, proxy, Tor, crawler, abuser). The trust score ranges from 0 to 100, higher is better. Matching the UI, 75–100 is `good`, 45–74 is `moderate`, below 45 is `poor`. Missing or invalid scores yield `score: null` and `status: "unknown"`; missing flags are `null`, not `false`.
 
 `format` accepts `json` (default) or `text`. Errors always use JSON `{ "error": "…" }`: 400 for invalid input, 429 for rate limits, 503 when the caller IP is unavailable, and 502 for provider failures or mismatched IPs. Existing API rate limits apply; responses are not cached. This reports third-party IP reputation, not terminal speed tests, browser diagnostics or AI account availability.
 
@@ -54,6 +54,8 @@ Returns `ip`, `source`, `checked_at`, `score`, `status`, location, ISP, ASN and 
 5. Deploy and open the assigned `workers.dev` address. Use the Worker settings to connect a custom domain.
 
 The project uses **Cloudflare Workers with Static Assets**. The `/api/*` routes need a Worker. Core features require no application environment variables or API keys. See “Verification” for Turnstile and reCAPTCHA setup.
+
+For map access from mainland China, configure `TIANDITU_TOKEN` under Worker → Settings → Variables and Secrets (or run `pnpm exec wrangler secret put TIANDITU_TOKEN`). Maps prefer Tianditu and fall back to OpenStreetMap when unavailable; without the token, OpenStreetMap remains the default.
 
 Workers Builds builds and deploys when `main` receives a commit. The button above points to the original repository. To preserve the fork relationship and update workflow, follow the steps to import your fork.
 
@@ -75,6 +77,12 @@ Workers Builds builds and deploys when `main` receives a commit. The button abov
 
 Some lookups rely on third-party services and may fail because of rate limits or CORS restrictions. HTTP timing isn't the same as ICMP Ping. IP classifications and reputation scores are references, not official decisions from AI platforms.
 
+### WebMCP
+
+In browsers with native `document.modelContext`, the site registers structured tools for IP, WHOIS and subdomain lookups, network and AI checks, service status, and browser diagnostics. `one_ip_catalog` lists supported sites, platforms and pages; `one_ip_open_page` opens interactive permission and human verification pages. Tools reuse the site's existing sources and request limits, and support cancellation. Browsers without WebMCP continue to use the normal UI.
+
+WebMCP is experimental. For local testing, enable `chrome://flags/#enable-webmcp-testing` and inspect `await document.modelContext.getTools()`. Live Chrome use requires the [WebMCP Origin Trial](https://developer.chrome.com/docs/ai/webmcp/) or later native support; this repository does not include an origin trial token. Tools are exposed only to the current same-origin page, with no cross-origin iframe delegation. Results can contain third-party content; users should decide whether to share browser fingerprints, egress IPs or WebRTC results with an agent.
+
 ## Screenshots
 
 IP addresses, detailed locations and ISP / ASN information have been redacted. Values are not live results.
@@ -88,6 +96,17 @@ IP addresses, detailed locations and ISP / ASN information have been redacted. V
     <td><img src="docs/screenshots/mobile-home-dark-redacted.png" alt="Redacted mobile dark overview" width="360" /></td>
   </tr>
 </table>
+
+## Business Cooperation
+
+One IP offers a closed-source commercial edition and related services for organizations that need network and browser environment checks, AI service connectivity diagnostics, batch acceptance testing or continuous monitoring. Cooperation can cover:
+
+- Commercial licenses and team workflows
+- Private deployment and data isolation
+- Custom development, integrations and API access
+- Technical consulting, deployment and ongoing support
+
+To discuss the commercial edition, private deployment or a custom solution, email [ip@huzhihui.com](mailto:ip@huzhihui.com) with your use case, deployment model and expected scale. See the [GitHub repository](https://github.com/zhihui-hu/one-ip) for project details. The final service scope, data permissions and delivery terms are subject to agreement.
 
 ## Update your fork
 
@@ -164,6 +183,8 @@ The script uploads non-empty values, preserves existing secrets and skips missin
 reCAPTCHA uses v3 score-based keys. The backend validates hostname, the `browser_check` action and score, with a passing threshold of 0.5. The v2 checkbox and Enterprise assessment API are unsupported. Production rejects localhost.
 
 ## Structure and data sources
+
+Data sources differ by edition: the open-source edition uses publicly accessible data on the internet and public third-party APIs; the closed-source commercial edition supports private deployment and uses data from the private deployment environment. The specific data scope, retention and usage rights are subject to the commercial plan and contract.
 
 - `src/app.css`: interface styles; `src/components/ui`: shadcn/ui components.
 - `src/views`: network, browser, AI and status pages; `public/worker`: Worker APIs.

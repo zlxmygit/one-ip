@@ -1,6 +1,13 @@
 import { t } from "@/i18n";
 
 export type ResponseMode = "json" | "text" | "opaque" | "headers";
+export class HttpRequestError extends Error {
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
 
 /** Only HTTP transport for browser probes and API calls. Never proxy browser probes. */
 export async function request<T>(
@@ -31,7 +38,7 @@ export async function request<T>(
           } catch {
             /* Non-JSON upstream. */
           }
-          throw new Error(message);
+          throw new HttpRequestError(response.status, message);
         }
         if (mode === "headers") return response.headers as T;
         return (

@@ -67,7 +67,7 @@ export interface CoffeeIp {
     lon?: number | null;
   }[];
   intelligence?: {
-    threats?: string[];
+    threats?: (string | { label: string; severity?: string })[];
     abuser_level?: string;
     abuser_score_raw?: string;
     rep_threat?: unknown;
@@ -76,6 +76,21 @@ export interface CoffeeIp {
 }
 export interface CoffeeLookup extends Lookup {
   coffee: CoffeeIp;
+}
+export function coffeeThreatLabels(data: CoffeeIp, riskOnly = false): string[] {
+  return (data.intelligence?.threats ?? [])
+    .filter(
+      (threat) =>
+        !riskOnly ||
+        typeof threat === "string" ||
+        threat.severity?.toLowerCase() !== "info",
+    )
+    .map((threat) => (typeof threat === "string" ? threat : threat.label))
+    .filter(
+      (label): label is string =>
+        typeof label === "string" && label.trim().length > 0,
+    )
+    .map((label) => label.trim());
 }
 export function adaptCoffee(data: CoffeeIp): CoffeeLookup {
   const sources: Geo[] = (data.geo_sources ?? []).map((g) => ({

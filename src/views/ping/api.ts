@@ -10,6 +10,9 @@ export interface PingResponse {
     probe: { country: string; city: string; network: string };
     result: {
       status: string;
+      statusCode?: number;
+      resolvedAddress?: string;
+      timings?: { total?: number };
       stats?: { min: number; avg: number; max: number; loss: number };
       rawOutput?: string;
     };
@@ -17,6 +20,7 @@ export interface PingResponse {
 }
 export type PingInput = {
   host: string;
+  protocol?: "icmp" | "https";
   preferred?: boolean;
   nodes?: string[];
   regions?: string[];
@@ -90,6 +94,7 @@ export async function runPing(
   signal.throwIfAborted();
   const cacheKey = JSON.stringify({
     host: input.host.trim().toLowerCase(),
+    protocol: input.protocol ?? "icmp",
     nodes: input.nodes ? [...new Set(input.nodes)].sort() : undefined,
     regions: input.regions ? [...new Set(input.regions)].sort() : undefined,
     perRegion: input.perRegion,
@@ -108,6 +113,7 @@ export async function runPing(
   const batches: PingInput[] = input.nodes
     ? Array.from({ length: Math.ceil(input.nodes.length / 50) }, (_, i) => ({
         host: input.host,
+        protocol: input.protocol,
         preferred: input.preferred,
         nodes: input.nodes!.slice(i * 50, i * 50 + 50),
       }))

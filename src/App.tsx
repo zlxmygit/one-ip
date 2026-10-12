@@ -22,11 +22,11 @@ const ClaudePage = lazy(() => import("@/views/claude"));
 const GptPage = lazy(() => import("@/views/gpt"));
 const IpPage = lazy(() => import("@/views/ip"));
 const LinkPage = lazy(() => import("@/views/link"));
-const ExitsPage = lazy(() => import("@/views/link/exits"));
 const BrowserPage = lazy(() => import("@/views/browser"));
 const ChallengesPage = lazy(() => import("@/views/browser/challenges"));
 const PingPage = lazy(() => import("@/views/ping"));
 const StatusPage = lazy(() => import("@/views/status"));
+const SubdomainsPage = lazy(() => import("@/views/subdomains"));
 const WhoisPage = lazy(() => import("@/views/whois"));
 const ClaudeStatusPage = lazy(() => import("@/views/claude/status"));
 const GptStatusPage = lazy(() => import("@/views/gpt/status"));
@@ -66,9 +66,9 @@ export function App() {
             <Route index element={<IpPage />} />
             <Route path=":ip" element={<IpPage />} />
           </Route>
+          <Route path="subdomains" element={<SubdomainsPage />} />
           <Route path="whois" element={<WhoisPage />} />
           <Route path="connectivity" element={<LinkPage />} />
-          <Route path="exits" element={<ExitsPage />} />
           <Route path="ping" element={<PingPage />} />
           <Route path="cdn" element={<CdnPage />} />
           <Route path="dns" element={<DnsExitPage />} />

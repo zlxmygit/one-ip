@@ -3,6 +3,11 @@ import nodes from "./nodes.json";
 
 export async function startPing(input) {
   const host = target(input.host);
+  if (
+    input.protocol !== undefined &&
+    !["icmp", "https"].includes(input.protocol)
+  )
+    throw new HttpError(400, "不支持此测量协议");
   let locations;
   if (input.regions) {
     const allowed = ["AF", "AS", "EU", "NA", "OC", "SA"];
@@ -50,9 +55,16 @@ export async function startPing(input) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      type: "ping",
+      type: input.protocol === "https" ? "http" : "ping",
       target: host,
-      measurementOptions: { packets: 3 },
+      measurementOptions:
+        input.protocol === "https"
+          ? {
+              protocol: "HTTPS",
+              port: 443,
+              request: { method: "HEAD", path: "/" },
+            }
+          : { packets: 3 },
       locations,
       inProgressUpdates: true,
     }),

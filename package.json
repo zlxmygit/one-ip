@@ -6,7 +6,7 @@
   "engines": {
     "node": ">=24"
   },
-  "version": "26.911.2124",
+  "version": "26.922.1906",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -22,6 +22,7 @@
     "browser:build": "node scripts/build-browser-diagnostics.mjs"
   },
   "dependencies": {
+    "@cloudflare/speedtest": "1.13.0",
     "@fingerprintjs/fingerprintjs": "5.2.0",
     "@fontsource-variable/geist": "^5.3.0",
     "@hookform/resolvers": "latest",
@@ -30,6 +31,7 @@
     "class-variance-authority": "^0.7.1",
     "cn": "^0.2.6",
     "date-fns": "latest",
+    "echarts": "^6.1.0",
     "fingerprintjs2": "2.1.4",
     "gsap": "latest",
     "jotai": "latest",
@@ -59,6 +61,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.1.0",
+    "esbuild": "0.28.1",
     "eslint-config-prettier": "latest",
     "husky": "latest",
     "lint-staged": "latest",
@@ -67,7 +70,7 @@
     "prettier-plugin-tailwindcss": "latest",
     "rollup": "4.63.1",
     "tailwindcss": "latest",
-    "typescript": "~6.0.2",
+    "typescript": "~7.0.2",
     "vite": "^8.2.2",
     "wrangler": "^4.130.0"
   },
